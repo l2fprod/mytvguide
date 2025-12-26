@@ -1,0 +1,17 @@
+import React from 'react'
+import { Channel } from '../types'
+import ProgramBlock from './ProgramBlock'
+
+type Props = { channel: Channel; totalWidth: number }
+
+export default function ChannelRow({ channel, totalWidth }: Props) {
+  return (
+    <div className="channel-row">
+      <div className="channel-track" style={{ width: `${totalWidth}px` }}>
+        {channel.programmes.map((p, i) => (
+          <ProgramBlock key={i} prog={p} />
+        ))}
+      </div>
+    </div>
+  )
+}

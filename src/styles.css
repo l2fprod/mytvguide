@@ -1,0 +1,137 @@
+:root{
+	--bg:#0b0f14;
+	--panel:#0f1720;
+	--muted:#9aa6b2;
+	--accent:#6ee7b7;
+	--now:#ff5b5b;
+	--channel-width:200px;
+	--row-odd: rgba(255,255,255,0.1);
+	--row-even: rgba(255,255,255,0.02);
+}
+
+html, body { height: 100%; }
+* { box-sizing: border-box; }
+body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial; margin: 0; padding: 0; display: flex; flex-direction: column; background: radial-gradient(1200px 600px at 10% 10%, rgba(78,70,255,0.06), transparent), var(--bg); color: #e6eef6; overflow: hidden; }
+
+#app { height: 100%; display: flex; }
+#app > div { height: 100%; display: flex; flex-direction: column; width: 100%; }
+header { padding: 16px 18px; background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-bottom: 1px solid rgba(255,255,255,0.03); }
+header h1 { margin: 0 0 4px 0; font-size: 20px; letter-spacing: 0.4px; }
+header p { margin: 0; color: var(--muted); font-size: 13px }
+
+main { padding: 12px; display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+#timeline-controls { margin-bottom: 10px; }
+
+/* timeline root */
+#timeline { background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02)); display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; height: 100%; overflow: hidden; border-radius: 10px; box-shadow: 0 6px 30px rgba(2,6,23,0.6); border: 1px solid rgba(255,255,255,0.03); }
+
+/* layout: frozen left + scrollable right */
+.timeline-container { display: flex; width: 100%; height: 100%; min-height: 0; overflow: hidden; }
+.channels-left {
+	width: var(--channel-width);
+	flex: 0 0 var(--channel-width);
+	border-right: 1px solid rgba(255,255,255,0.03);
+	background: linear-gradient(180deg, rgba(12,18,24,0.6), rgba(12,18,24,0.45));
+	overflow: auto; padding: 0 6px;
+}
+.channels-left::-webkit-scrollbar{height:8px;width:8px}
+.channels-left::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#3b82f6,#8b5cf6);border-radius:8px}
+.channels-left-inner{position:relative}
+.timeline-header-spacer{height:40px;flex:0 0 40px}
+.channels-left .channel-label{padding:8px;border-radius:8px;margin-bottom:0; font-weight:700; height:72px; display:flex; align-items:center; gap:10px; background:transparent; border-bottom: 1px solid rgba(255,255,255,0.02)}
+
+/* alternating dark tones for channel list (left) */
+.channels-left .channel-label:nth-child(odd){ background-color: var(--row-odd) }
+.channels-left .channel-label:nth-child(even){ background-color: var(--row-even) }
+
+.timeline-right { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.right-scroll { position: relative; overflow: auto; flex: 1 1 auto; min-height: 0; width: 100%; }
+
+.timeline-header { position: sticky; top: 0; height: 40px; border-bottom: 1px solid rgba(255,255,255,0.03); background: var(--panel); z-index: 20; display:flex; align-items:center }
+.timeline-header-inner { height: 40px; position: relative; }
+.tick { position: absolute; top: 8px; transform: translateX(-50%); font-size: 12px; padding: 3px 6px; color: var(--muted); display: flex; flex-direction: column; align-items: center; }
+.tick-day { font-size: 12px; font-weight: 700; line-height: 1; margin-bottom: 2px; color: #cfe8ff }
+.tick-time { font-size: 12px; color: var(--muted); line-height: 1; }
+
+.now-marker { position: absolute; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, var(--now), #ff9b9b); z-index: 10; transform: translateX(-50%); display: flex; align-items: flex-start; box-shadow: 0 0 14px rgba(255,91,91,0.35); }
+.now-marker .now-label { position: relative; top: 8px; left: 8px; background: var(--now); color: white; font-size: 12px; padding: 4px 8px; border-radius: 14px; white-space: nowrap; font-weight:700 }
+
+.channels { min-height: 0; position: relative; }
+.channel-row { display: flex; align-items: stretch; border-bottom: 1px solid rgba(255,255,255,0.02); height: 72px; }
+.channel-label { width: var(--channel-width); padding: 8px; background: transparent; border-right: 1px solid rgba(255,255,255,0.02); font-weight: 700; flex: 0 0 var(--channel-width); display: flex; align-items: center; gap: 12px; }
+.channel-label .channel-icon { width: 48px; height: 48px; object-fit: contain; border-radius: 8px; flex: 0 0 48px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:6px }
+.channel-label .channel-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #dff6ff }
+.channel-track { position: relative; height: 72px; }
+
+/* apply same alternating tones to the program row area */
+.channels .channel-row:nth-child(odd) .channel-track{ background-color: var(--row-odd) }
+.channels .channel-row:nth-child(even) .channel-track{ background-color: var(--row-even) }
+
+/* Program block: base style. If a program node sets inline `--accent`, it will be applied. */
+.prog { position: absolute; top: 12px; height: 48px; padding: 8px 12px; border-radius: 10px; color: white; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display:flex; align-items:center; gap:8px; align-items:flex-start; transition: transform 180ms cubic-bezier(.2,.9,.2,1), box-shadow 180ms, opacity 180ms; box-shadow: 0 6px 14px rgba(2,6,23,0.55); border-left: 4px solid rgba(255,255,255,0.06); font-weight:700; font-size:13px; }
+
+/* default darker program block for better contrast */
+.prog { background-color: #083a56; color: #e7f8ff }
+.prog::before{ content:''; position:absolute; inset:0; border-radius:10px; background: none; pointer-events:none }
+
+/* accent via CSS variable. components can set style="--accent: #8b5cf6" */
+.prog[data-accent]{
+	background-color: var(--accent);
+	color: white;
+	border-left-color: color-mix(in srgb, var(--accent) 70%, black);
+	box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+}
+
+/* some pre-defined accents fallback for older program nodes */
+.prog.accent-1{ background-color:#ff6b6b; border-left-color:#ff6b6b }
+.prog.accent-2{ background-color:#34d399; border-left-color:#10b981 }
+.prog.accent-3{ background-color:#3b82f6; border-left-color:#2563eb }
+.prog.accent-4{ background-color:#7c3aed; border-left-color:#6d28d9 }
+.prog.accent-5{ background-color:#f6ad55; border-left-color:#f59e0b }
+
+.prog:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 18px 34px rgba(2,6,23,0.75) }
+
+/* small / meta text inside program blocks */
+.prog .meta{ display:block; font-size:12px; color:rgba(255,255,255,0.9); opacity:0.95 }
+.prog .sub{ display:block; font-size:11px; color:rgba(255,255,255,0.8); font-weight:500 }
+
+/* responsiveness */
+@media (max-width:900px){:root{--channel-width:140px}.channel-label .channel-icon{width:40px;height:40px}.channel-row{height:64px}.channels-left .channel-label{height:64px}.prog{height:44px;top:10px}}
+
+/* utility: lightly dim empty areas for depth */
+.right-scroll::after{ content:''; position: absolute; right: 0; top: 0; bottom: 0; width: 20px; pointer-events:none; background: linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,0.15)); }
+
+/* Make selection view fill the height of its parent container (not the viewport) */
+.selection-view {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	width: 100%;
+	height: 100%;
+	min-height: 0; /* allow child flex items to scroll inside */
+	overflow: auto;
+}
+
+.selection-view > div { background: transparent }
+
+.selection-top { flex: 0 0 auto }
+.selection-content { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0 }
+.selection-desc { margin: 0 0 8px 0; color: var(--muted) }
+.selection-list { flex: 1 1 auto; overflow: auto; border: 1px solid rgba(255,255,255,0.03); border-radius: 6px; padding: 6px }
+.selection-item { padding: 6px; border-bottom: 1px solid rgba(255,255,255,0.02) }
+.selection-actions { flex: 0 0 auto }
+
+/* grid layout for selection cards */
+.selection-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; padding: 8px }
+.selection-card { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: rgba(255,255,255,0.02); border-radius: 8px; cursor: pointer; transition: transform 120ms, box-shadow 120ms }
+.selection-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(2,6,23,0.5) }
+.selection-card.selected { outline: 2px solid var(--accent); box-shadow: 0 10px 30px rgba(78,70,255,0.06) }
+.selection-card-body { display: flex; flex-direction: column }
+.selection-card-title { font-weight: 700; color: #dff6ff }
+.selection-card-meta { font-size: 12px; color: var(--muted) }
+.selection-checkbox { margin-left: 12px }
+
+/* reuse channel icon styles but smaller for the selection grid */
+.selection-channel-icon { width: 40px; height: 40px; flex: 0 0 40px; border-radius: 6px; object-fit: contain; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding: 4px }
+
+.selection-card .channel-icon { margin-right: 8px }

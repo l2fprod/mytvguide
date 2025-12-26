@@ -1,0 +1,23 @@
+{
+  "name": "mytvguide",
+  "version": "0.1.0",
+  "description": "Simple TV schedule visualizer",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "generate-data": "node scripts/xmltv-to-json.js"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.0",
+    "typescript": "^5.2.0",
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "unzipper": "^0.12.3",
+    "xml2js": "^0.4.23",
+    "js-yaml": "^4.1.0"
+  }
+}
