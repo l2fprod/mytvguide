@@ -19,7 +19,7 @@ export default function App() {
     <div>
       <header>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <img src="/logo.svg" alt="TV Guide Logo" style={{ width: '64px', height: '64px' }} />
+          <img src="logo.svg" alt="TV Guide Logo" style={{ width: '64px', height: '64px' }} />
           <h1 style={{ marginLeft: '16px', margin: 0 }}>TV Schedule</h1>
         </div>
       </header>
