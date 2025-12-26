@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Simple TV schedule visualizer",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview",
     "generate-data": "node scripts/xmltv-to-json.js"

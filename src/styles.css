@@ -138,6 +138,21 @@ main { padding: 12px; display: flex; flex-direction: column; flex: 1 1 auto; min
 .timeline-right { position: relative; }
 .timeline-right::after{ content:''; position: absolute; right: 0; top: 0; bottom: 0; width: 20px; pointer-events:none; background: linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,0.15)); z-index: 30; }
 
+/* iPhone portrait / very small screens: tighten header and keep toolbar controls on one line */
+@media (max-width: 420px) {
+  header { padding: 8px 10px; }
+  header > div { display: flex; align-items: center; gap: 8px; }
+  header img { width: 28px; height: 28px; display: block; }
+  header h1 { font-size: 16px; margin: 0; }
+  header p { display: none; }
+
+  /* toolbar: keep search + buttons on one line */
+  #timeline-controls { display: flex; align-items: center; gap: 6px; }
+  #timeline-controls label { flex: 1 1 auto; min-width: 0; margin: 0; }
+  #timeline-controls input[type="text"] { width: 100%; padding: 6px 8px; font-size: 13px; }
+  #timeline-controls .btn { padding: 6px 10px; font-size: 13px; margin-left: 6px; white-space: nowrap; flex: 0 0 auto; }
+}
+
 /* Button styles */
 .btn {
   padding: 8px 16px;
@@ -163,6 +178,30 @@ main { padding: 12px; display: flex; flex-direction: column; flex: 1 1 auto; min
 .btn.selected {
   background-color: var(--accent);
   outline: 2px solid var(--accent);
+}
+
+/* destructive button (e.g. Clear) */
+.btn.destructive {
+  background-color: #ff8b8b;
+  color: #2b0b0b;
+}
+.btn.destructive:hover:not(:disabled) {
+  background-color: #ff6b6b;
+}
+.btn.destructive:active:not(:disabled) {
+  background-color: #ff4c4c;
+}
+
+/* primary/affirmative button (View schedule) */
+.btn.primary {
+  background-color: #10b981;
+  color: white;
+}
+.btn.primary:hover:not(:disabled) {
+  background-color: #0fa66f;
+}
+.btn.primary:active:not(:disabled) {
+  background-color: #0c8f58;
 }
 
 /* Input styles */
@@ -205,11 +244,29 @@ label {
 .selection-view > div { background: transparent }
 
 .selection-top { flex: 0 0 auto }
+.selection-top .btn {
+  padding: 6px 8px;
+  font-size: 13px;
+  border-radius: 6px;
+  margin-left: 0;
+}
+
+.selection-top .btn.selected {
+  outline: 2px solid var(--accent);
+  background-color: var(--accent);
+  color: #06271f;
+}
 .selection-content { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0 }
 .selection-desc { margin: 0 0 8px 0; color: var(--muted) }
 .selection-list { flex: 1 1 auto; overflow: auto; border: 1px solid rgba(255,255,255,0.03); border-radius: 6px; padding: 6px }
 .selection-item { padding: 6px; border-bottom: 1px solid rgba(255,255,255,0.02) }
-.selection-actions { flex: 0 0 auto }
+.selection-actions { 
+  flex: 0 0 auto; 
+  display: flex; 
+  justify-content: flex-end; 
+  gap: 8px; 
+  padding-top: 8px;
+}
 
 /* grid layout for selection cards */
 .selection-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; padding: 8px }

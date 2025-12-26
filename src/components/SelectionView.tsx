@@ -49,7 +49,7 @@ export default function SelectionView({ onComplete }: { onComplete?: () => void 
   return (
     <div className="selection-view">
       <div className="selection-top">
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {categories.map(cat => (
             <button key={cat} onClick={() => toggleCategoryFilter(cat)} className={`btn ${filterCats.has(cat) ? 'selected' : ''}`}>{cat}</button>
           ))}
@@ -75,8 +75,8 @@ export default function SelectionView({ onComplete }: { onComplete?: () => void 
       </div>
 
       <div className="selection-actions">
-        <button onClick={applySelection} disabled={tempSelected.size === 0} className="btn">View schedule</button>
-        <button onClick={clear} className="btn">Clear</button>
+        <button onClick={applySelection} disabled={tempSelected.size === 0} className="btn primary">View schedule</button>
+        <button onClick={clear} className="btn destructive">Clear</button>
       </div>
     </div>
   )
