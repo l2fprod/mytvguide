@@ -166,7 +166,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const promises = batch.map(async (channelId) => {
         try {
           const safe = safeFilename(channelId)
-          const data = await loadJSON<any>(`/data/channels/channel-${safe}.json`)
+          const data = await loadJSON<any>(`./data/channels/channel-${safe}.json`)
           const rawProgrammes = data.programmes || data.programs || []
           const now = new Date()
           const maxFuture = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000)
@@ -202,7 +202,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const loadChannels = useCallback(async () => {
     dispatch({ type: 'SET_LOADING', payload: true })
     try {
-      const channelsList = await loadJSON<any[]>('/data/channels.json')
+      const channelsList = await loadJSON<any[]>('./data/channels.json')
       console.log('# of channels loaded:', channelsList.length);
       const channels: Channel[] = (channelsList || [])
         .map(c => ({
