@@ -1,10 +1,14 @@
 import React from 'react'
 import { useStore } from '../store'
 
-export default function SelectionView({ onComplete }: { onComplete?: () => void }) {
-  const { state, setSelectedChannels } = useStore()
+type Props = {
+  tempSelected: Set<string>
+  setTempSelected: (set: Set<string>) => void
+}
+
+export default function SelectionView({ tempSelected, setTempSelected }: Props) {
+  const { state } = useStore()
   const [filterCats, setFilterCats] = React.useState<Set<string>>(new Set())
-  const [tempSelected, setTempSelected] = React.useState<Set<string>>(new Set(Array.from(state.selectedChannelIds || [])))
 
   const categories = React.useMemo(() => {
     const set = new Set<string>()
@@ -37,15 +41,6 @@ export default function SelectionView({ onComplete }: { onComplete?: () => void 
     return channels.filter(ch => (ch.categories || []).some((c: string) => filterCats.has(c)))
   }, [channels, filterCats])
 
-  const applySelection = () => {
-    setSelectedChannels(new Set(tempSelected))
-    onComplete && onComplete()
-  }
-
-  const clear = () => {
-    setTempSelected(new Set())
-  }
-
   return (
     <div className="selection-view">
       <div className="selection-top">
@@ -72,11 +67,6 @@ export default function SelectionView({ onComplete }: { onComplete?: () => void 
             </div>
           ))}
         </div>
-      </div>
-
-      <div className="selection-actions">
-        <button onClick={applySelection} disabled={tempSelected.size === 0} className="btn primary">View schedule</button>
-        <button onClick={clear} className="btn destructive">Clear</button>
       </div>
     </div>
   )
