@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  schedule:
+    # every 2 days at 01:00 UTC
+    - cron: '0 1 */2 * *'
 
 permissions:
   contents: read
