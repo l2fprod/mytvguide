@@ -170,7 +170,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           const rawProgrammes = data.programmes || data.programs || []
           const now = new Date()
           const maxFuture = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000)
-          const MAX_MS = 3 * 60 * 60 * 1000 // 3 hours
+          // const MAX_MS = 5 * 60 * 60 * 1000 // 3 hours
           let skippedLongCount = 0
           const programmes = (rawProgrammes as any[]).filter(p => {
             const end = parsePossibleDate(p.end || p.stop || p.finish)
@@ -180,13 +180,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             // discard if start exists and is after maxFuture (more than 3 days ahead)
             if (start && start.getTime() > maxFuture.getTime()) return false
             // discard if we can compute duration and it's longer than 3 hours
-            if (start && end) {
-              const dur = end.getTime() - start.getTime()
-              if (dur > MAX_MS) {
-                skippedLongCount += 1
-                return false
-              }
-            }
+            // if (start && end) {
+            //   const dur = end.getTime() - start.getTime()
+            //   if (dur > MAX_MS) {
+            //     skippedLongCount += 1
+            //     return false
+            //   }
+            // }
             return true
           })
           if (skippedLongCount > 0) console.debug(`Skipped ${skippedLongCount} programmes >3h for channel ${channelId}`)
