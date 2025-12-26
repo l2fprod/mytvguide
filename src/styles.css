@@ -58,9 +58,39 @@ main { padding: 12px; display: flex; flex-direction: column; flex: 1 1 auto; min
 
 .channels { min-height: 0; position: relative; }
 .channel-row { display: flex; align-items: stretch; border-bottom: 1px solid rgba(255,255,255,0.02); height: 72px; }
-.channel-label { width: var(--channel-width); padding: 8px; background: transparent; border-right: 1px solid rgba(255,255,255,0.02); font-weight: 700; flex: 0 0 var(--channel-width); display: flex; align-items: center; gap: 12px; }
-.channel-label .channel-icon { width: 48px; height: 48px; object-fit: contain; border-radius: 8px; flex: 0 0 48px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:6px }
-.channel-label .channel-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #dff6ff }
+.channel-label { 
+  width: var(--channel-width); 
+  padding: 8px; 
+  background: transparent; 
+  border-right: 1px solid rgba(255,255,255,0.02); 
+  font-weight: 700; 
+  flex: 0 0 var(--channel-width); 
+  display: flex; 
+  align-items: center; 
+  position: relative; 
+}
+.channel-label .channel-icon { 
+  position: absolute; 
+  top: 0; 
+  right: 8px; 
+  width: 48px; 
+  height: 72px; 
+  object-fit: contain; 
+  border-radius: 4px; 
+  opacity: 0.3; 
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); 
+  padding: 4px; 
+}
+.channel-label .channel-name { 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: normal; 
+  color: #dff6ff; 
+  font-size: 12px; 
+  line-height: 1.2; 
+  word-break: break-word; 
+  width: 100%; 
+}
 .channel-track { position: relative; height: 72px; }
 
 /* apply same alternating tones to the program row area */
