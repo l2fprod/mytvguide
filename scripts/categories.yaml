@@ -11,6 +11,7 @@ categories:
     - Boxe
     - Boxing
     - Cyclisme
+    - Cyclo
     - Cyclo-cross
     - Cyclocross
     - Endurance
@@ -213,6 +214,7 @@ categories:
     - Série hospitalière
     - Série humoristique
     - Série policière
+    - Série réaliste
     - Série pornographique
     - Série sentimentale
     - Série western
@@ -792,67 +794,36 @@ categories:
     - Holiday
     - Aviation
 
-  Adult:
+  Misc:
     - Adult
-    - Adults only
+    - Adulte
     - Adultes
+    - Adults only
+    - Advertising
+    - Auction
+    - Aucun genre
+    - Aucun sous-genre
+    - Autre
+    - Autres
+    - Autres émissions
+    - Awards
+    - Bus./financial
+    - Collectibles
+    - Divers
+    - Du Monde
     - Erotic
     - Erotisme
     - Érotisme
+    - Event
+    - Filler
+    - Film Adultes
     - Film Erotique
     - Film Érotique
     - Film pornographique
-    - Pornographie
-    - Film pornographique
-    - Adulte
-    - Gay/lesbian
-    - Film Adultes
-
-  Misc:
-    - Other
-    - Others Program
-    - Unmapped
-    - Inconnu
-    - Autre
-    - Autres
-    - Divers
-    - Pas de diffusion
-    - Programme
-    - Programme indéterminé
-    - Programme-indetermine
-    - XY
-    - Unknown
-    - Unknown Genre
-    - Series
-    - Série
-    - Séries
-    - Téléfilm
-    - Bus./financial
-    - Advertising
-    - Auction
-    - Aucun genre
-    - Aucun sous-genre
-    - Autres émissions
-    - Fundraiser
-    - Filler
-    - SiAPromo
-    - Miscellaneous
-    - Unknown Label
     - Fin
-    - Du Monde
-    - Advertising
-    - Auction
-    - Collectibles
-    - Aucun genre
-    - Aucun sous-genre
-    - Autres émissions
     - Fundraiser
-    - Filler
-    - Event
-    - Awards
-    - Advertising
-    - Miscellaneous
-    - Unknown Label
+    - Gay/lesbian
+    - Inconnu
     - Jt-sport
     - Mag Actualites
     - Mag Adultes
@@ -940,4 +911,22 @@ categories:
     - Magazine musical
     - Magazine sportif
     - Magazines
+    - Miscellaneous
+    - Other
+    - Others Program
+    - Pas de diffusion
+    - Pornographie
+    - Programme
+    - Programme indéterminé
+    - Programme-indetermine
+    - Série
+    - Series
+    - Séries
+    - SiAPromo
+    - Téléfilm
+    - Unknown
+    - Unknown Genre
+    - Unknown Label
+    - Unmapped
+    - XY
 

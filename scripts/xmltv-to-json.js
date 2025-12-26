@@ -130,12 +130,14 @@ async function main() {
           // map to meta categories using categoryMap; fallback to original
           const mapped = raw.map(r => {
             const key = (r || '').trim();
+            if (!key) return null;
             if (categoryMap.has(key)) return categoryMap.get(key);
             if (key && !missingCategories.has(key)) {
               console.info('Unmapped category:', key);
               missingCategories.add(key);
             }
-            return key;
+            // fallback to 'Other' for unmapped categories
+            return 'Other';
           }).filter(Boolean);
           // dedupe preserving order
           const seen = new Set();
