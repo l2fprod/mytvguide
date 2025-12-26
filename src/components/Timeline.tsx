@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useImperativeHandle, forwardRef } from 'react'
 import { Schedule } from '../types'
 import ChannelRow from './ChannelRow'
+import ChannelLabel from './ChannelLabel'
 
 type Props = { schedule: Schedule; ppm: number }
 
@@ -135,8 +136,8 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
             <div className="channels-left-inner" ref={labelsInnerRef}>
               {channelsWithLayout.map((ch, idx) => (
                 <div key={ch.id || idx} className="channel-label">
-                  {ch.icon ? <img src={ch.icon} alt={`${ch.name || ch.id} logo`} className="channel-icon" /> : null}
-                  <div className="channel-name">{ch.name || ch.id}</div>
+                  {/* ChannelLabel handles icon and auto font-sizing to ensure visibility */}
+                  <ChannelLabel name={ch.name || ch.id} icon={ch.icon} />
                 </div>
               ))}
             </div>
@@ -166,9 +167,11 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
                 <div className="now-marker" style={{ left: `${Math.round(minutesBetween(timelineStart, now) * ppm)}px` }}>
                 </div>
               ) : null}
-              {channelsWithLayout.map((ch, idx) => (
-                <ChannelRow key={ch.id || idx} channel={ch} totalWidth={totalWidth} />
-              ))}
+              <div className="channels-inner">
+                {channelsWithLayout.map((ch, idx) => (
+                  <ChannelRow key={ch.id || idx} channel={ch} totalWidth={totalWidth} />
+                ))}
+              </div>
             </div>
           </div>
         </div>

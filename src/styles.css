@@ -38,11 +38,15 @@ main { padding: 12px; display: flex; flex-direction: column; flex: 1 1 auto; min
 .channels-left::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#3b82f6,#8b5cf6);border-radius:8px}
 .channels-left-inner{position:relative}
 .timeline-header-spacer{height:40px;flex:0 0 40px}
-.channels-left .channel-label{padding:8px;border-radius:8px;margin-bottom:0; font-weight:700; height:72px; display:flex; align-items:center; gap:10px; background:transparent; border-bottom: 1px solid rgba(255,255,255,0.02)}
+.channels-left .channel-label{padding:8px;border-radius:8px;margin-bottom:0; font-weight:700; height:64px; display:flex; align-items:center; gap:10px; background:transparent; border-bottom: 1px solid rgba(255,255,255,0.02)}
 
 /* alternating dark tones for channel list (left) */
 .channels-left .channel-label:nth-child(odd){ background-color: var(--row-odd) }
 .channels-left .channel-label:nth-child(even){ background-color: var(--row-even) }
+
+/* apply same alternating tones to timeline rows (right) so stripes align */
+.channels .channel-row:nth-child(odd){ background-color: var(--row-odd) }
+.channels .channel-row:nth-child(even){ background-color: var(--row-even) }
 
 .timeline-right { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
 .right-scroll { position: relative; overflow: auto; flex: 1 1 auto; min-height: 0; width: 100%; }
@@ -57,7 +61,7 @@ main { padding: 12px; display: flex; flex-direction: column; flex: 1 1 auto; min
 .now-marker .now-label { position: relative; top: 8px; left: 8px; background: var(--now); color: white; font-size: 12px; padding: 4px 8px; border-radius: 14px; white-space: nowrap; font-weight:700 }
 
 .channels { min-height: 0; position: relative; }
-.channel-row { display: flex; align-items: stretch; border-bottom: 1px solid rgba(255,255,255,0.02); height: 72px; }
+.channel-row { display: flex; align-items: stretch; border-bottom: 1px solid rgba(255,255,255,0.02); height: 64px; }
 .channel-label { 
   width: var(--channel-width); 
   padding: 8px; 
@@ -74,7 +78,7 @@ main { padding: 12px; display: flex; flex-direction: column; flex: 1 1 auto; min
   top: 0; 
   right: 8px; 
   width: 48px; 
-  height: 72px; 
+  height: 64px; 
   object-fit: contain; 
   border-radius: 4px; 
   opacity: 0.3; 
@@ -86,19 +90,20 @@ main { padding: 12px; display: flex; flex-direction: column; flex: 1 1 auto; min
   text-overflow: ellipsis; 
   white-space: normal; 
   color: #dff6ff; 
-  font-size: 12px; 
-  line-height: 1.2; 
+  /* default font-size is removed so ChannelLabel can set an adaptive size */
+  line-height: 1.1; 
   word-break: break-word; 
   width: 100%; 
+  display: block;
 }
-.channel-track { position: relative; height: 72px; }
+.channel-track { position: relative; height: 64px; }
 
 /* apply same alternating tones to the program row area */
 .channels .channel-row:nth-child(odd) .channel-track{ background-color: var(--row-odd) }
 .channels .channel-row:nth-child(even) .channel-track{ background-color: var(--row-even) }
 
 /* Program block: base style. If a program node sets inline `--accent`, it will be applied. */
-.prog { position: absolute; top: 12px; height: 48px; padding: 8px 12px; border-radius: 10px; color: white; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display:flex; align-items:center; gap:8px; align-items:flex-start; transition: transform 180ms cubic-bezier(.2,.9,.2,1), box-shadow 180ms, opacity 180ms; box-shadow: 0 6px 14px rgba(2,6,23,0.55); border-left: 4px solid rgba(255,255,255,0.06); font-weight:700; font-size:13px; }
+.prog { position: absolute; top: 8px; height: 48px; padding: 8px 12px; border-radius: 10px; color: white; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display:flex; gap:8px; align-items:center; transition: transform 180ms cubic-bezier(.2,.9,.2,1), box-shadow 180ms, opacity 180ms; box-shadow: 0 6px 14px rgba(2,6,23,0.55); border-left: 4px solid rgba(255,255,255,0.06); font-weight:700; font-size:13px; }
 
 /* default darker program block for better contrast */
 .prog { background-color: #083a56; color: #e7f8ff }
@@ -128,8 +133,10 @@ main { padding: 12px; display: flex; flex-direction: column; flex: 1 1 auto; min
 /* responsiveness */
 @media (max-width:900px){:root{--channel-width:140px}.channel-label .channel-icon{width:40px;height:40px}.channel-row{height:64px}.channels-left .channel-label{height:64px}.prog{height:44px;top:10px}}
 
-/* utility: lightly dim empty areas for depth */
-.right-scroll::after{ content:''; position: absolute; right: 0; top: 0; bottom: 0; width: 20px; pointer-events:none; background: linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,0.15)); }
+/* utility: lightly dim empty areas for depth (stick to the visible right edge of the timeline container)
+  move the overlay to `.timeline-right` so it doesn't scroll with the inner scrollable area */
+.timeline-right { position: relative; }
+.timeline-right::after{ content:''; position: absolute; right: 0; top: 0; bottom: 0; width: 20px; pointer-events:none; background: linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,0.15)); z-index: 30; }
 
 /* Button styles */
 .btn {
