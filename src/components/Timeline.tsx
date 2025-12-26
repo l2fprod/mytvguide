@@ -31,6 +31,8 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
   const labelsRef = useRef<HTMLDivElement | null>(null)
   const labelsInnerRef = useRef<HTMLDivElement | null>(null)
 
+  const [selectedProg, setSelectedProg] = useState<{ prog: any; channelName?: string } | null>(null)
+
   const { timelineStart, timelineEnd, totalWidth } = useMemo(() => {
     const starts = schedule.channels.flatMap(c => c.programmes.map((p: any) => parseISO(p.start || p.begin || p.tstart)).filter(Boolean))
     const ends = schedule.channels.flatMap(c => c.programmes.map((p: any) => parseISO(p.end || p.stop || p.finish)).filter(Boolean))
@@ -128,8 +130,6 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
   if (!schedule.channels || schedule.channels.length === 0) {
     return <div id="timeline"></div>
   }
-
-  const [selectedProg, setSelectedProg] = useState<{ prog: any; channelName?: string } | null>(null)
 
   return (
     <div id="timeline">
