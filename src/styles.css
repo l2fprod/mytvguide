@@ -282,3 +282,20 @@ label {
 .selection-channel-icon { width: 40px; height: 40px; flex: 0 0 40px; border-radius: 6px; object-fit: contain; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding: 4px }
 
 .selection-card .channel-icon { margin-right: 8px }
+
+/* Modal styles */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:200 }
+.modal { background: var(--panel); color: #e6eef6; border-radius: 10px; padding: 18px; width: min(720px, 94%); max-height: 90vh; overflow: auto; position: relative; box-shadow: 0 12px 48px rgba(2,6,23,0.8) }
+.modal-close { position: absolute; right: 12px; top: 8px; background: transparent; border: none; color: #cfe8ff; font-size: 24px; cursor: pointer }
+.modal-header { margin-bottom: 12px }
+.modal-channel { font-size: 12px; color: var(--muted) }
+.modal-title { margin: 6px 0 4px 0 }
+.modal-time { font-size: 13px; color: var(--muted) }
+.modal-body p { color: #dceff3; line-height: 1.4 }
+
+/* Mobile: bottom sheet style on small screens */
+@media (max-width:420px) {
+  .modal-overlay { align-items: flex-end; }
+  .modal { width: 100%; border-radius: 12px 12px 0 0; max-height: 70vh; padding: 14px }
+  .modal-close { right: 10px; top: 6px }
+}

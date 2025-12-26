@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useRef, useImperativeHandle, forwardRef } from 'react'
+import React, { useEffect, useMemo, useRef, useImperativeHandle, forwardRef, useState } from 'react'
 import { Schedule } from '../types'
 import ChannelRow from './ChannelRow'
 import ChannelLabel from './ChannelLabel'
+import ProgramModal from './ProgramModal'
 
 type Props = { schedule: Schedule; ppm: number }
 
@@ -128,6 +129,8 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
     return <div id="timeline"></div>
   }
 
+  const [selectedProg, setSelectedProg] = useState<{ prog: any; channelName?: string } | null>(null)
+
   return (
     <div id="timeline">
       <div className="timeline-container">
@@ -162,20 +165,21 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
                 </div>
             </div>
 
-            <div className="channels" style={{ width: `${totalWidth}px` }}>
+              <div className="channels" style={{ width: `${totalWidth}px` }}>
               {nowInRange ? (
                 <div className="now-marker" style={{ left: `${Math.round(minutesBetween(timelineStart, now) * ppm)}px` }}>
                 </div>
               ) : null}
               <div className="channels-inner">
                 {channelsWithLayout.map((ch, idx) => (
-                  <ChannelRow key={ch.id || idx} channel={ch} totalWidth={totalWidth} />
+                  <ChannelRow key={ch.id || idx} channel={ch} totalWidth={totalWidth} onSelectProgram={(prog) => setSelectedProg({ prog, channelName: ch.name })} />
                 ))}
               </div>
             </div>
           </div>
         </div>
       </div>
+      <ProgramModal open={!!selectedProg} prog={selectedProg?.prog} channelName={selectedProg?.channelName} onClose={() => setSelectedProg(null)} />
     </div>
   )
 })
