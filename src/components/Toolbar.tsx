@@ -20,7 +20,7 @@ export default function Toolbar({ search, setSearch, ppm, setPpm, onNow, onEdit,
         <input id="search" type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search" />
       </label>
       <button type="button" onClick={() => onNow && onNow()} className="btn">Now</button>
-      {onEdit ? <button type="button" onClick={() => onEdit && onEdit()} className="btn">Change selection</button> : null}
+      {onEdit ? <button type="button" onClick={() => onEdit && onEdit()} className="btn">Select</button> : null}
     </div>
   )
 }
