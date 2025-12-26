@@ -30,6 +30,7 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
   const rightScrollRef = useRef<HTMLDivElement | null>(null)
   const labelsRef = useRef<HTMLDivElement | null>(null)
   const labelsInnerRef = useRef<HTMLDivElement | null>(null)
+  const headerInnerRef = useRef<HTMLDivElement | null>(null)
 
   const [selectedProg, setSelectedProg] = useState<{ prog: any; channelName?: string } | null>(null)
 
@@ -77,6 +78,25 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
       labelsInner.style.transform = ''
     }
   }, [labelsRef, labelsInnerRef, rightScrollRef, schedule])
+
+  // sync horizontal scroll: move header ticks in opposite direction of right scroll
+  useEffect(() => {
+    const right = rightScrollRef.current
+    const headerInner = headerInnerRef.current
+    if (!right || !headerInner) return
+
+    const onRightScrollH = () => {
+      headerInner.style.transform = `translateX(-${right.scrollLeft}px)`
+    }
+
+    right.addEventListener('scroll', onRightScrollH, { passive: true })
+    onRightScrollH()
+
+    return () => {
+      right.removeEventListener('scroll', onRightScrollH)
+      if (headerInner) headerInner.style.transform = ''
+    }
+  }, [rightScrollRef, headerInnerRef, /* totalWidth intentionally not required here */])
 
   // expose scrollToNow via ref
   useImperativeHandle(ref, () => ({
@@ -131,15 +151,30 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
     return <div id="timeline"></div>
   }
 
+  
+
   return (
     <div id="timeline">
+      <div className="timeline-header" ref={headerRef}>
+        <div className="timeline-header-inner" ref={headerInnerRef} style={{ position: 'relative', width: `${totalWidth}px`, marginLeft: 'var(--channel-width)' }}>
+            {ticks.map((d, i) => {
+              const left = Math.round(minutesBetween(timelineStart, d) * ppm)
+              const showDay = i === 0 || d.getDate() !== ticks[i - 1].getDate()
+              return (
+                <div key={i} className="tick" style={{ left: `${left}px` }}>
+                  {showDay ? <div className="tick-day">{d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}</div> : <div className="tick-day" />}
+                  <div className="tick-time">{d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                </div>
+              )
+            })}
+        </div>
+      </div>
+
       <div className="timeline-container">
         <div className="channels-left" ref={labelsRef}>
-            <div className="timeline-header-spacer" />
             <div className="channels-left-inner" ref={labelsInnerRef}>
               {channelsWithLayout.map((ch, idx) => (
                 <div key={ch.id || idx} className="channel-label">
-                  {/* ChannelLabel handles icon and auto font-sizing to ensure visibility */}
                   <ChannelLabel name={ch.name || ch.id} icon={ch.icon} />
                 </div>
               ))}
@@ -148,24 +183,7 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
 
         <div className="timeline-right">
           <div className="right-scroll" ref={rightScrollRef}>
-            <div className="timeline-header" ref={headerRef} style={{ width: `${totalWidth}px` }}>
-              <div className="timeline-header-inner" style={{ position: 'relative', width: `${totalWidth}px` }}>
-                  {ticks.map((d, i) => {
-                    const left = Math.round(minutesBetween(timelineStart, d) * ppm)
-                    const showDay = i === 0 || d.getDate() !== ticks[i - 1].getDate()
-                    return (
-                      <div key={i} className="tick" style={{ left: `${left}px` }}>
-                        {showDay ? <div className="tick-day">{d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}</div> : <div className="tick-day" />}
-                        <div className="tick-time">{d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                      </div>
-                    )
-                  })}
-
-                  {/* now-marker moved out of header so it can span the full scrollable area */}
-                </div>
-            </div>
-
-              <div className="channels" style={{ width: `${totalWidth}px` }}>
+            <div className="channels" style={{ width: `${totalWidth}px` }}>
               {nowInRange ? (
                 <div className="now-marker" style={{ left: `${Math.round(minutesBetween(timelineStart, now) * ppm)}px` }}>
                 </div>

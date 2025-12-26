@@ -29,11 +29,14 @@ main { padding: 12px; display: flex; flex-direction: column; flex: 1 1 auto; min
 /* layout: frozen left + scrollable right */
 .timeline-container { display: flex; width: 100%; height: 100%; min-height: 0; overflow: hidden; }
 .channels-left {
-	width: var(--channel-width);
-	flex: 0 0 var(--channel-width);
-	border-right: 1px solid rgba(255,255,255,0.03);
-	background: linear-gradient(180deg, rgba(12,18,24,0.6), rgba(12,18,24,0.45));
-	overflow: auto; padding: 0 6px;
+  width: var(--channel-width);
+  flex: 0 0 var(--channel-width);
+  border-right: 1px solid rgba(255,255,255,0.03);
+  background: linear-gradient(180deg, rgba(12,18,24,0.6), rgba(12,18,24,0.45));
+  overflow: auto; padding: 0 6px;
+  /* ensure the left column sits below the timeline header */
+  position: relative;
+  z-index: 10;
 }
 .channels-left::-webkit-scrollbar{height:8px;width:8px}
 .channels-left::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#3b82f6,#8b5cf6);border-radius:8px}
@@ -52,11 +55,39 @@ main { padding: 12px; display: flex; flex-direction: column; flex: 1 1 auto; min
 .timeline-right { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
 .right-scroll { position: relative; overflow: auto; flex: 1 1 auto; min-height: 0; width: 100%; }
 
-.timeline-header { position: sticky; top: 0; height: 40px; border-bottom: 1px solid rgba(255,255,255,0.03); background: var(--panel); z-index: 20; display:flex; align-items:center }
+.timeline-header { position: sticky; top: 0; left: 0; height: 40px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.03); background: var(--panel); z-index: 60; display:flex; align-items:center }
 .timeline-header-inner { height: 40px; position: relative; }
-.tick { position: absolute; top: 8px; transform: translateX(-50%); font-size: 12px; padding: 3px 6px; color: var(--muted); display: flex; flex-direction: column; align-items: center; }
-.tick-day { font-size: 12px; font-weight: 700; line-height: 1; margin-bottom: 2px; color: #cfe8ff }
-.tick-time { font-size: 12px; color: var(--muted); line-height: 1; }
+.tick {
+  position: absolute;
+  top: 6px;
+  transform: translateX(-50%);
+  font-size: 12px;
+  padding: 3px 6px;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 160px; /* prevent overly wide ticks */
+  pointer-events: none;
+}
+.tick-day {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 2px;
+  color: #cfe8ff;
+  white-space: nowrap; /* keep day on single line */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+.tick-time {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1;
+  white-space: nowrap; /* keep time on single line */
+}
 
 .now-marker { position: absolute; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, var(--now), #ff9b9b); z-index: 10; transform: translateX(-50%); display: flex; align-items: flex-start; box-shadow: 0 0 14px rgba(255,91,91,0.35); }
 .now-marker .now-label { position: relative; top: 8px; left: 8px; background: var(--now); color: white; font-size: 12px; padding: 4px 8px; border-radius: 14px; white-space: nowrap; font-weight:700 }
