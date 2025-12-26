@@ -101,6 +101,59 @@ main { padding: 12px; display: flex; flex-direction: column; flex: 1 1 auto; min
 /* utility: lightly dim empty areas for depth */
 .right-scroll::after{ content:''; position: absolute; right: 0; top: 0; bottom: 0; width: 20px; pointer-events:none; background: linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,0.15)); }
 
+/* Button styles */
+.btn {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  margin-left: 12px;
+}
+
+.btn:first-child {
+  margin-left: 0;
+}
+
+.btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.btn.selected {
+  background-color: var(--accent);
+  outline: 2px solid var(--accent);
+}
+
+/* Input styles */
+input[type="text"] {
+  padding: 8px 12px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #e6eef6;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(110, 231, 183, 0.2);
+}
+
+/* Label styles */
+label {
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #e6eef6;
+}
+
 /* Make selection view fill the height of its parent container (not the viewport) */
 .selection-view {
 	display: flex;

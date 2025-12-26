@@ -124,7 +124,7 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
   const nowInRange = now.getTime() >= timelineStart.getTime() && now.getTime() <= timelineEnd.getTime()
 
   if (!schedule.channels || schedule.channels.length === 0) {
-    return <div id="timeline">Loading...</div>
+    return <div id="timeline"></div>
   }
 
   return (
