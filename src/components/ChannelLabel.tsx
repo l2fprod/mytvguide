@@ -14,7 +14,7 @@ export default function ChannelLabel({ name, icon }: Props) {
 
     let raf = 0
     const maxSize = 16
-    const minSize = 10
+    const minSize = 8
     const lineHeight = 1.2
 
     function fits(size: number) {
