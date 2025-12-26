@@ -158,6 +158,16 @@ main { padding: 12px; display: flex; flex-direction: column; flex: 1 1 auto; min
 
 .prog:hover{ transform: translateY(-3px) scale(1.01); box-shadow: 0 18px 34px rgba(2,6,23,0.75) }
 
+/* dim non-matching programmes when search is active */
+.prog.prog--dim{ opacity: 0.42; filter: grayscale(30%); box-shadow: none }
+
+/* dim channel row and left label when channel has no matching programmes */
+.channel-row--dim{ opacity: 0.6 }
+/* dim channel label contents (text/icon) while keeping background stripe visible */
+.channel-label--dim{ filter: grayscale(20%) }
+.channel-label--dim .channel-name{ color: rgba(255,255,255,0.2) }
+.channel-label--dim .channel-icon{ opacity: 0.12 }
+
 /* small / meta text inside program blocks */
 .prog .meta{ display:block; font-size:12px; color:rgba(255,255,255,0.9); opacity:0.95 }
 .prog .sub{ display:block; font-size:11px; color:rgba(255,255,255,0.8); font-weight:500 }

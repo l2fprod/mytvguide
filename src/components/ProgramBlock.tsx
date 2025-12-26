@@ -11,7 +11,7 @@ function ProgramBlock({ prog, onSelect }: Props) {
 
   return (
     <div
-      className={`prog`}
+      className={`prog ${((prog as any)._matchesSearch === false) ? 'prog--dim' : ''}`}
       data-accent
       style={{ left: `${left}px`, width: `${width}px`, ['--accent' as any]: color }}
       title={prog.title + (prog.desc ? '\n' + prog.desc : '')}

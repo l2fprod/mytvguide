@@ -23,7 +23,10 @@ function parseISO(s?: any) {
   if (!isNaN(d2.getTime())) return d2
   return null
 }
-function minutesBetween(a: Date, b: Date) { return (b.getTime() - a.getTime()) / 60000 }
+function minutesBetween(a?: Date | null, b?: Date | null) {
+  if (!a || !b) return 0
+  return (b.getTime() - a.getTime()) / 60000
+}
 
 const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
   const headerRef = useRef<HTMLDivElement | null>(null)
@@ -35,8 +38,9 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
   const [selectedProg, setSelectedProg] = useState<{ prog: any; channelName?: string } | null>(null)
 
   const { timelineStart, timelineEnd, totalWidth } = useMemo(() => {
-    const starts = schedule.channels.flatMap(c => c.programmes.map((p: any) => parseISO(p.start || p.begin || p.tstart)).filter(Boolean))
-    const ends = schedule.channels.flatMap(c => c.programmes.map((p: any) => parseISO(p.end || p.stop || p.finish)).filter(Boolean))
+    const channelsArr = Array.isArray(schedule.channels) ? schedule.channels : []
+    const starts = channelsArr.flatMap(c => (c.programmes || []).map((p: any) => parseISO(p.start || p.begin || p.tstart)).filter(Boolean))
+    const ends = channelsArr.flatMap(c => (c.programmes || []).map((p: any) => parseISO(p.end || p.stop || p.finish)).filter(Boolean))
     if (starts.length === 0) {
       const now = new Date()
       return { timelineStart: now, timelineEnd: new Date(now.getTime() + 60 * 60000), totalWidth: 800 }
@@ -117,9 +121,10 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
   // precompute programme layout (start/end Date, left, width, color, timeRange)
   const channelsWithLayout = useMemo(() => {
     const palette = ['#8b5cf6', '#60a5fa', '#f97316', '#ef4444', '#10b981', '#f59e0b', '#ec4899', '#06b6d4']
-    return schedule.channels.map(ch => ({
+    const channelsArr = Array.isArray(schedule.channels) ? schedule.channels : []
+    return channelsArr.map(ch => ({
       ...ch,
-      programmes: ch.programmes.map((p: any) => {
+      programmes: (ch.programmes || []).map((p: any) => {
         const start = parseISO(p.start || p.begin || p.tstart) || new Date()
         const end = parseISO(p.end || p.stop || p.finish) || new Date(start.getTime() + 30 * 60000)
         const minsFromStart = minutesBetween(timelineStart, start)
@@ -174,7 +179,7 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
         <div className="channels-left" ref={labelsRef}>
             <div className="channels-left-inner" ref={labelsInnerRef}>
               {channelsWithLayout.map((ch, idx) => (
-                <div key={ch.id || idx} className="channel-label">
+                <div key={ch.id || idx} className={`channel-label ${(ch as any)._hasMatchSearch === false ? 'channel-label--dim' : ''}`}>
                   <ChannelLabel name={ch.name || ch.id} icon={ch.icon} />
                 </div>
               ))}

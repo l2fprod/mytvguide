@@ -23,12 +23,21 @@ export default function ScheduleView({ onEdit, search, setSearch, ppm, setPpm, t
   }, [selectedChannelIds, state.loadedChannelIds, loadProgrammesForChannels])
 
   const filteredSchedule = useMemo(() => {
-    let channels = state.schedule.channels
-    channels = channels.filter(c => selectedChannelIds.includes(c.id))
-    if (search) {
-      const s = search.toLowerCase()
-      channels = channels.filter(c => (c.name || '').toLowerCase().includes(s) || (c.id || '').toLowerCase().includes(s))
-    }
+    const s = (search || '').toLowerCase()
+    const channels = state.schedule.channels
+      .filter(c => selectedChannelIds.includes(c.id))
+      .map(c => {
+        // annotate each programme with a match flag; do not remove programmes or channels
+        const programmes = (c.programmes || []).map(p => {
+          if (!s) return { ...p, _matchesSearch: true }
+          const title = (p.title || p.name || '').toLowerCase()
+          const desc = (p.desc || p.description || '').toLowerCase()
+          const matches = title.includes(s) || desc.includes(s)
+          return { ...p, _matchesSearch: matches }
+        })
+        const hasMatch = (programmes || []).some((p: any) => p._matchesSearch)
+        return { ...c, programmes, _hasMatchSearch: hasMatch }
+      })
     return { channels }
   }, [state.schedule, selectedChannelIds, search])
   return (
