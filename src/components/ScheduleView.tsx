@@ -1,13 +1,18 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useStore } from '../store'
-import Toolbar from './Toolbar'
 import Timeline from './Timeline'
 
-export default function ScheduleView({ onEdit }: { onEdit?: () => void }) {
+type Props = {
+  onEdit?: () => void
+  search: string
+  setSearch: (s: string) => void
+  ppm: number
+  setPpm: (n: number) => void
+  timelineRef: React.RefObject<any>
+}
+
+export default function ScheduleView({ onEdit, search, setSearch, ppm, setPpm, timelineRef }: Props) {
   const { state, loadProgrammesForChannels } = useStore()
-  const [ppm, setPpm] = useState<number>(2)
-  const [search, setSearch] = useState<string>('')
-  const timelineRef = useRef<any>(null)
   const selectedChannelIds = useMemo(() => Array.from(state.selectedChannelIds || []), [state.selectedChannelIds])
 
   useEffect(() => {
@@ -28,18 +33,6 @@ export default function ScheduleView({ onEdit }: { onEdit?: () => void }) {
   }, [state.schedule, selectedChannelIds, search])
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <Toolbar
-        search={search}
-        setSearch={setSearch}
-        ppm={ppm}
-        setPpm={setPpm}
-        onNow={() => timelineRef.current?.scrollToNow?.()}
-        onEdit={() => onEdit && onEdit()}
-        allCategories={state.allCategories}
-        selectedCategories={new Set()}
-        addSelectedCategory={() => {}}
-        removeSelectedCategory={() => {}}
-      />
       <Timeline ref={timelineRef} schedule={filteredSchedule} ppm={ppm} />
     </div>
   )
