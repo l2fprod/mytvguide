@@ -61,29 +61,41 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
     const labels = labelsRef.current
     const labelsInner = labelsInnerRef.current
     const right = rightScrollRef.current
-    if (!labels || !labelsInner || !right) return
+    const headerInner = headerInnerRef.current
+    if (!labels || !labelsInner || !right || !headerInner) return
 
-    // hide native left scrollbar and drive vertical position via transform
+    // hide native left scrollbar and drive positions via transform for better perf
     const prevOverflow = labels.style.overflow
     labels.style.overflow = 'hidden'
 
-    // apply transform immediately on scroll to avoid visual lag
-    const onRightScroll = () => {
-      labelsInner.style.transform = `translateY(-${right.scrollTop}px)`
+    // use rAF to batch and ensure continuous updates (fixes intermittent stops)
+    let ticking = false
+    const onScroll = () => {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(() => {
+        try {
+          labelsInner.style.transform = `translateY(-${right.scrollTop}px)`
+          headerInner.style.transform = `translateX(-${right.scrollLeft}px)`
+        } finally {
+          ticking = false
+        }
+      })
     }
 
-    right.addEventListener('scroll', onRightScroll, { passive: true })
+    right.addEventListener('scroll', onScroll, { passive: true })
     // initialize position
-    onRightScroll()
+    onScroll()
 
     return () => {
-      right.removeEventListener('scroll', onRightScroll)
+      right.removeEventListener('scroll', onScroll)
       labels.style.overflow = prevOverflow
       labelsInner.style.transform = ''
+      headerInner.style.transform = ''
     }
-  }, [labelsRef, labelsInnerRef, rightScrollRef, schedule])
+  }, [labelsRef, labelsInnerRef, rightScrollRef, headerInnerRef, schedule])
 
-  // sync horizontal scroll: move header ticks in opposite direction of right scroll
+  // sync horizontal scroll: move header in sync with right scroll
   useEffect(() => {
     const right = rightScrollRef.current
     const headerInner = headerInnerRef.current
@@ -98,7 +110,7 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
 
     return () => {
       right.removeEventListener('scroll', onRightScrollH)
-      if (headerInner) headerInner.style.transform = ''
+      headerInner.style.transform = ''
     }
   }, [rightScrollRef, headerInnerRef, /* totalWidth intentionally not required here */])
 
