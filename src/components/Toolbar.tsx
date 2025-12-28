@@ -20,7 +20,21 @@ export default function Toolbar({ search, setSearch, ppm, setPpm, onNow, onEdit,
   return (
     <div id="timeline-controls">
       <label>
-        <input id="search" type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search" />
+        <span className="search-wrapper">
+          <input
+            id="search"
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Escape') setSearch('') }}
+            placeholder="Search"
+          />
+          {search ? (
+            <button type="button" onClick={() => setSearch('')} className="search-clear" title="Clear search" aria-label="Clear search">
+              ×
+            </button>
+          ) : null}
+        </span>
       </label>
       <button type="button" onClick={() => onNow && onNow()} className="btn" title="Go to current time">
         <Clock size={16} />

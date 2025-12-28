@@ -263,6 +263,29 @@ input[type="text"]:focus {
   box-shadow: 0 0 0 2px rgba(110, 231, 183, 0.2);
 }
 
+/* search wrapper: place a clear button inside the input field */
+.search-wrapper { position: relative; display: inline-block; }
+.search-wrapper input[type="text"] { padding-right: 34px; }
+.search-clear {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+}
+.search-clear:hover { background: rgba(255,255,255,0.03); color: #fff }
+
+@media (max-width:420px) {
+  .search-wrapper input[type="text"] { padding-right: 30px }
+}
+
 /* Label styles */
 label {
   align-items: center;
