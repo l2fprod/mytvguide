@@ -47,6 +47,25 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
     })
     return arr
   }, [schedule])
+
+  // current time that updates every minute (aligned to minute boundary)
+  const [now, setNow] = useState<Date>(new Date())
+  useEffect(() => {
+    setNow(new Date())
+    let intervalId: ReturnType<typeof setInterval> | null = null
+    let timeoutId: ReturnType<typeof setTimeout> | null = null
+    const ms = new Date()
+    const delay = 60000 - (ms.getSeconds() * 1000 + ms.getMilliseconds())
+    // first tick aligned to next minute
+    timeoutId = setTimeout(() => {
+      setNow(new Date())
+      intervalId = setInterval(() => setNow(new Date()), 60000)
+    }, delay)
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId)
+      if (intervalId) clearInterval(intervalId as unknown as number)
+    }
+  }, [])
   const { timelineStart, timelineEnd, totalWidth } = useMemo(() => {
     const channelsArr = sortedChannels
     const starts = channelsArr.flatMap(c => (c.programmes || []).map((p: any) => parseISO(p.start || p.begin || p.tstart)).filter(Boolean))
@@ -171,7 +190,6 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
     t += 60 * 60 * 1000
   }
 
-  const now = new Date()
   const nowInRange = now.getTime() >= timelineStart.getTime() && now.getTime() <= timelineEnd.getTime()
 
   if (sortedChannels.length === 0) {
