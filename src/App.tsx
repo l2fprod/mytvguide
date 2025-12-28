@@ -6,7 +6,7 @@ import ScheduleView from './components/ScheduleView'
 import Toolbar from './components/Toolbar'
 
 export default function App() {
-  const { loadChannels, state, clearSelectedChannels, setSelectedChannels } = useStore()
+  const { loadChannels, state, setSelectedChannels } = useStore()
   const [editing, setEditing] = useState<boolean>(false)
   const [search, setSearch] = useState<string>('')
   const [ppm, setPpm] = useState<number>(2)

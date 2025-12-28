@@ -1,5 +1,6 @@
 import React from 'react'
-import { Clock, Settings } from 'lucide-react'
+import { Clock, Settings, RefreshCw } from 'lucide-react'
+import { useStore } from '../store'
 
 type Props = {
   search: string
@@ -15,6 +16,7 @@ type Props = {
 }
 
 export default function Toolbar({ search, setSearch, ppm, setPpm, onNow, onEdit, allCategories, selectedCategories, addSelectedCategory, removeSelectedCategory }: Props) {
+  const { ensureSelectedChannelsLoaded } = useStore()
   return (
     <div id="timeline-controls">
       <label>
@@ -22,6 +24,14 @@ export default function Toolbar({ search, setSearch, ppm, setPpm, onNow, onEdit,
       </label>
       <button type="button" onClick={() => onNow && onNow()} className="btn" title="Go to current time">
         <Clock size={16} />
+      </button>
+      <button
+        type="button"
+        onClick={() => ensureSelectedChannelsLoaded && ensureSelectedChannelsLoaded(true)}
+        className="btn"
+        title="Reload selected channels (no cache)"
+      >
+        <RefreshCw size={16} />
       </button>
       {onEdit ? <button type="button" onClick={() => onEdit && onEdit()} className="btn" title="Select channels">
         <Settings size={16} />

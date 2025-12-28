@@ -12,15 +12,12 @@ type Props = {
 }
 
 export default function ScheduleView({ onEdit, search, setSearch, ppm, setPpm, timelineRef }: Props) {
-  const { state, loadProgrammesForChannels } = useStore()
+  const { state, ensureSelectedChannelsLoaded } = useStore()
   const selectedChannelIds = useMemo(() => Array.from(state.selectedChannelIds || []), [state.selectedChannelIds])
 
   useEffect(() => {
-    const toLoad = selectedChannelIds.filter(id => !state.loadedChannelIds.has(id))
-    if (toLoad.length > 0) {
-      loadProgrammesForChannels(toLoad)
-    }
-  }, [selectedChannelIds, state.loadedChannelIds, loadProgrammesForChannels])
+    ensureSelectedChannelsLoaded()
+  }, [selectedChannelIds, state.loadedChannelIds, ensureSelectedChannelsLoaded])
 
   const filteredSchedule = useMemo(() => {
     const s = (search || '').toLowerCase()

@@ -60,18 +60,6 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
       }
     case 'SET_SELECTED_CHANNELS':
       return { ...state, selectedChannelIds: action.payload }
-    case 'ADD_SELECTED_CHANNEL': {
-      const next = new Set(state.selectedChannelIds || [])
-      next.add(action.payload)
-      return { ...state, selectedChannelIds: next }
-    }
-    case 'REMOVE_SELECTED_CHANNEL': {
-      const next = new Set(state.selectedChannelIds || [])
-      next.delete(action.payload)
-      return { ...state, selectedChannelIds: next }
-    }
-    case 'CLEAR_SELECTED_CHANNELS':
-      return { ...state, selectedChannelIds: new Set() }
     default:
       return state
   }
@@ -80,12 +68,8 @@ function storeReducer(state: StoreState, action: StoreAction): StoreState {
 interface StoreContextType {
   state: StoreState
   loadChannels: () => Promise<void>
-  loadProgrammesForChannels: (channelIds: string[]) => Promise<void>
-  // selection API: only selected channel ids are stored/persisted
+  ensureSelectedChannelsLoaded: (noCache?: boolean) => Promise<void>
   setSelectedChannels: (ids: Set<string>) => void
-  addSelectedChannel: (id: string) => void
-  removeSelectedChannel: (id: string) => void
-  clearSelectedChannels: () => void
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined)
@@ -96,9 +80,10 @@ function safeFilename(id?: string) {
 
 const BATCH_SIZE = 50
 
-async function loadJSON<T>(url: string): Promise<T> {
-  const res = await fetch(url)
-  if (!res.ok) throw new Error('Failed to load ' + url + ' (' + res.status + ')')
+async function loadJSON<T>(url: string, noCache = false): Promise<T> {
+  const finalUrl = noCache ? url + (url.includes('?') ? '&' : '?') + '_=' + Date.now() : url
+  const res = await fetch(finalUrl, noCache ? { cache: 'no-store' } : undefined as any)
+  if (!res.ok) throw new Error('Failed to load ' + finalUrl + ' (' + res.status + ')')
   return res.json()
 }
 
@@ -160,13 +145,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const loadProgrammesForChannels = useCallback(async (channelIds: string[]) => {
+  const loadProgrammesForChannels = useCallback(async (channelIds: string[], noCache = false) => {
     for (let i = 0; i < channelIds.length; i += BATCH_SIZE) {
       const batch = channelIds.slice(i, i + BATCH_SIZE)
       const promises = batch.map(async (channelId) => {
         try {
           const safe = safeFilename(channelId)
-          const data = await loadJSON<any>(`./data/channels/channel-${safe}.json`)
+          const data = await loadJSON<any>(`./data/channels/channel-${safe}.json`, noCache)
           const rawProgrammes = data.programmes || data.programs || []
           const now = new Date()
           const maxFuture = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000)
@@ -199,10 +184,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const loadChannels = useCallback(async () => {
+  const ensureSelectedChannelsLoaded = useCallback(async (noCache = false) => {
+    const selected = Array.from((state.selectedChannelIds) || [])
+    const toLoad = noCache ? selected : selected.filter(id => !state.loadedChannelIds.has(id))
+    if (toLoad.length > 0) {
+      await loadProgrammesForChannels(toLoad, noCache)
+    }
+  }, [state.selectedChannelIds, state.loadedChannelIds, loadProgrammesForChannels])
+
+  const loadChannels = useCallback(async (noCache = false) => {
     dispatch({ type: 'SET_LOADING', payload: true })
     try {
-      const channelsList = await loadJSON<any[]>('./data/channels.json')
+      const channelsList = await loadJSON<any[]>('./data/channels.json', noCache)
       console.log('# of channels loaded:', channelsList.length);
       const channels: Channel[] = (channelsList || [])
         .map(c => ({
@@ -228,33 +221,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     persistSelection(ids)
   }, [persistSelection])
 
-  const addSelectedChannel = useCallback((id: string) => {
-    dispatch({ type: 'ADD_SELECTED_CHANNEL', payload: id })
-    const next = new Set(state.selectedChannelIds || [])
-    next.add(id)
-    persistSelection(next)
-  }, [state.selectedChannelIds, persistSelection])
-
-  const removeSelectedChannel = useCallback((id: string) => {
-    dispatch({ type: 'REMOVE_SELECTED_CHANNEL', payload: id })
-    const next = new Set(state.selectedChannelIds || [])
-    next.delete(id)
-    persistSelection(next)
-  }, [state.selectedChannelIds, persistSelection])
-
-  const clearSelectedChannels = useCallback(() => {
-    dispatch({ type: 'CLEAR_SELECTED_CHANNELS' })
-    persistSelection(new Set())
-  }, [persistSelection])
-
   const value: StoreContextType = {
     state,
     loadChannels,
-    loadProgrammesForChannels,
-    setSelectedChannels,
-    addSelectedChannel,
-    removeSelectedChannel,
-    clearSelectedChannels
+    ensureSelectedChannelsLoaded,
+    setSelectedChannels
   }
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
