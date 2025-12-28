@@ -37,8 +37,18 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
 
   const [selectedProg, setSelectedProg] = useState<{ prog: any; channelName?: string } | null>(null)
 
+  // memoized, case-insensitive alphabetical sort of channels
+  const sortedChannels = useMemo(() => {
+    const arr = Array.isArray(schedule.channels) ? [...schedule.channels] : []
+    arr.sort((a: any, b: any) => {
+      const aKey = ((a && (a.name || a.id)) || '').toString().toLowerCase()
+      const bKey = ((b && (b.name || b.id)) || '').toString().toLowerCase()
+      return aKey.localeCompare(bKey)
+    })
+    return arr
+  }, [schedule])
   const { timelineStart, timelineEnd, totalWidth } = useMemo(() => {
-    const channelsArr = Array.isArray(schedule.channels) ? schedule.channels : []
+    const channelsArr = sortedChannels
     const starts = channelsArr.flatMap(c => (c.programmes || []).map((p: any) => parseISO(p.start || p.begin || p.tstart)).filter(Boolean))
     const ends = channelsArr.flatMap(c => (c.programmes || []).map((p: any) => parseISO(p.end || p.stop || p.finish)).filter(Boolean))
     if (starts.length === 0) {
@@ -54,7 +64,7 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
     const totalMinutes = Math.max(60, minutesBetween(ts, te))
     const w = Math.ceil(totalMinutes * ppm)
     return { timelineStart: ts, timelineEnd: te, totalWidth: w }
-  }, [schedule, ppm])
+  }, [sortedChannels, ppm])
 
   // sync vertical scroll from right -> left using transform for better perf
   useEffect(() => {
@@ -133,7 +143,7 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
   // precompute programme layout (start/end Date, left, width, color, timeRange)
   const channelsWithLayout = useMemo(() => {
     const palette = ['#8b5cf6', '#60a5fa', '#f97316', '#ef4444', '#10b981', '#f59e0b', '#ec4899', '#06b6d4']
-    const channelsArr = Array.isArray(schedule.channels) ? schedule.channels : []
+    const channelsArr = sortedChannels
     return channelsArr.map(ch => ({
       ...ch,
       programmes: (ch.programmes || []).map((p: any) => {
@@ -151,7 +161,7 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
         return { ...p, _start: start, _end: end, _left: left, _width: width, _color: color, _timeRange: timeRange }
       })
     }))
-  }, [schedule, timelineStart, ppm])
+  }, [sortedChannels, timelineStart, ppm])
 
   const ticks = [] as Date[]
   let t = timelineStart.getTime()
@@ -164,7 +174,7 @@ const Timeline = forwardRef(function Timeline({ schedule, ppm }: Props, ref) {
   const now = new Date()
   const nowInRange = now.getTime() >= timelineStart.getTime() && now.getTime() <= timelineEnd.getTime()
 
-  if (!schedule.channels || schedule.channels.length === 0) {
+  if (sortedChannels.length === 0) {
     return <div id="timeline"></div>
   }
 
